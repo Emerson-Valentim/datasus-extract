@@ -29,6 +29,8 @@ def downloadData(
                     uf = ufs.pop()
                     fs = instance.process(group, uf, year, month)
                 fs.merge()
+                # If the download is successful, reset UFs.
+                ufs = UFs[:]
                 break
 
             # Add the processed group to the list.
@@ -38,7 +40,7 @@ def downloadData(
     finally:
         # Try to download the data again.
         downloadData(
-            ufs=currentTry + 1,
+            ufs=ufs,
             currentTry=currentTry + 1,
             processedGroups=processedGroups,
             instance=instance,

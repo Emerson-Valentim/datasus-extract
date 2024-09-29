@@ -47,8 +47,14 @@ class FileSystem:
 
         merged_df = pd.concat(dfs, ignore_index=True)
 
+        # Delete files after processing to avoid memory leaks.
+        del dfs
+
         merged_file = os.path.join(self._dir, mergedFileName)
         merged_df.to_parquet(merged_file, index=False)
+
+        # Delete files after processing to avoid memory leaks.
+        del merged_df
 
         for file in all_files:
             if file != merged_file:

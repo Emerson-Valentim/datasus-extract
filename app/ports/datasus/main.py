@@ -45,6 +45,10 @@ class _FTPDataSUS:
         for file in files:
             file.persist()
             file.clean()
+
+        # Delete files after processing to avoid memory leaks.
+        del files
+
         fs = FileSystem(dir)
         return fs
 
