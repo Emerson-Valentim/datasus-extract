@@ -30,10 +30,13 @@ class FileReference:
 
 
 class FileSystem:
-    def merge(self, dir) -> Path:
+    def __init__(self, dir: str) -> None:
+        self._dir = dir
+
+    def merge(self) -> Path:
         mergedFileName = "merged.parquet"
         # Read all Parquet files into a single pandas DataFrame
-        all_files = glob.glob(os.path.join(dir, "*.parquet"))
+        all_files = glob.glob(os.path.join(self._dir, "*.parquet"))
         try:
             all_files.remove(mergedFileName)
         except ValueError:
@@ -44,7 +47,7 @@ class FileSystem:
 
         merged_df = pd.concat(dfs, ignore_index=True)
 
-        merged_file = os.path.join(dir, mergedFileName)
+        merged_file = os.path.join(self._dir, mergedFileName)
         merged_df.to_parquet(merged_file, index=False)
 
         for file in all_files:

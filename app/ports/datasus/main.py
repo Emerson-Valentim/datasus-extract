@@ -20,6 +20,8 @@ class _FTPDataSUS:
             raise ValueError("State, year, month and group must be set")
 
         dir = f"{self._dir}/{group}/{year}/{month}"
+        filename = state
+
         files = self._download(group, state, year, month)
         # This is needed because the download method returns two different interfaces.
         if type(files) != list:
@@ -27,7 +29,6 @@ class _FTPDataSUS:
 
         frs = []
         for file in files:
-            filename = state
             frs.append(
                 FileReference(
                     file.to_dataframe(),
@@ -39,13 +40,13 @@ class _FTPDataSUS:
 
         return frs, dir
 
-    def process(self, group: str, state: str, year: int, month: int):
+    def process(self, group: str, state: str, year: int, month: int) -> FileSystem:
         [files, dir] = self._build(group, year, month, state)
         for file in files:
             file.persist()
             file.clean()
-        fs = FileSystem()
-        fs.merge(dir)
+        fs = FileSystem(dir)
+        return fs
 
     def groups(self):
         return self._groups
